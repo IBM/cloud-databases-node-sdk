@@ -535,7 +535,9 @@ describe('CloudDatabasesV5', () => {
           configuration: configuration,
         };
 
-        const updateDatabaseConfigurationResult = cloudDatabasesService.updateDatabaseConfiguration(params);
+        const updateDatabaseConfigurationResult = cloudDatabasesService.updateDatabaseConfiguration(
+          params
+        );
 
         // all methods should return a Promise
         expectToBePromise(updateDatabaseConfigurationResult);
@@ -1248,7 +1250,11 @@ describe('CloudDatabasesV5', () => {
 
         const options = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/deployments/{id}/users/{user_type}/{user_id}/connections/{endpoint_type}', 'GET');
+        checkUrlAndMethod(
+          options,
+          '/deployments/{id}/users/{user_type}/{user_id}/connections/{endpoint_type}',
+          'GET'
+        );
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
@@ -1336,7 +1342,11 @@ describe('CloudDatabasesV5', () => {
 
         const options = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/deployments/{id}/users/{user_type}/{user_id}/connections/{endpoint_type}', 'POST');
+        checkUrlAndMethod(
+          options,
+          '/deployments/{id}/users/{user_type}/{user_id}/connections/{endpoint_type}',
+          'POST'
+        );
         const expectedAccept = 'application/json';
         const expectedContentType = 'application/json';
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
@@ -1405,7 +1415,9 @@ describe('CloudDatabasesV5', () => {
           id: id,
         };
 
-        const listDeploymentScalingGroupsResult = cloudDatabasesService.listDeploymentScalingGroups(params);
+        const listDeploymentScalingGroupsResult = cloudDatabasesService.listDeploymentScalingGroups(
+          params
+        );
 
         // all methods should return a Promise
         expectToBePromise(listDeploymentScalingGroupsResult);
@@ -1557,7 +1569,9 @@ describe('CloudDatabasesV5', () => {
           setDeploymentScalingGroupRequest: setDeploymentScalingGroupRequest,
         };
 
-        const setDeploymentScalingGroupResult = cloudDatabasesService.setDeploymentScalingGroup(params);
+        const setDeploymentScalingGroupResult = cloudDatabasesService.setDeploymentScalingGroup(
+          params
+        );
 
         // all methods should return a Promise
         expectToBePromise(setDeploymentScalingGroupResult);
@@ -1633,7 +1647,9 @@ describe('CloudDatabasesV5', () => {
           groupId: groupId,
         };
 
-        const getAutoscalingConditionsResult = cloudDatabasesService.getAutoscalingConditions(params);
+        const getAutoscalingConditionsResult = cloudDatabasesService.getAutoscalingConditions(
+          params
+        );
 
         // all methods should return a Promise
         expectToBePromise(getAutoscalingConditionsResult);
@@ -1741,7 +1757,9 @@ describe('CloudDatabasesV5', () => {
           autoscaling: autoscaling,
         };
 
-        const setAutoscalingConditionsResult = cloudDatabasesService.setAutoscalingConditions(params);
+        const setAutoscalingConditionsResult = cloudDatabasesService.setAutoscalingConditions(
+          params
+        );
 
         // all methods should return a Promise
         expectToBePromise(setAutoscalingConditionsResult);
@@ -2124,7 +2142,11 @@ describe('CloudDatabasesV5', () => {
 
         const options = getOptions(createRequestMock);
 
-        checkUrlAndMethod(options, '/deployments/{id}/whitelists/ip_addresses/{ipaddress}', 'DELETE');
+        checkUrlAndMethod(
+          options,
+          '/deployments/{id}/whitelists/ip_addresses/{ipaddress}',
+          'DELETE'
+        );
         const expectedAccept = 'application/json';
         const expectedContentType = undefined;
         checkMediaHeaders(createRequestMock, expectedAccept, expectedContentType);
