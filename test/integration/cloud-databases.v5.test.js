@@ -24,22 +24,68 @@ const authHelper = require('../resources/auth-helper.js');
 const timeout = 200000;
 
 // Location of our config file.
-const configFile = 'cloud_databases_v5.env';
+const configFile = 'cloud_databases.env';
 
 const describe = authHelper.prepareTests(configFile);
 
+const autoScalingGroupId = 'member';
+
+let cloudDatabasesService;
+let deploymentId;
+let replicaId;
+
+// Global variables to hold link values
+let taskIdLink;
+let backupIdLink;
+let scalingGroupIdLink;
+
+async function waitForTask(taskId) {
+  let complete = false;
+  for (let attempts = 0; !complete && attempts < 30; attempts++) {
+    const res = await cloudDatabasesService.getTask({
+      id: taskId,
+    });
+
+    expect(res.status).toEqual(200);
+    expect(res.result).not.toBeNull();
+
+    if (res.result.task == null) {
+      complete = true;
+    } else {
+      switch (res.result.task.status) {
+        case 'completed':
+        case 'failed':
+          complete = true;
+          expect(res.result.task.status).toEqual('completed');
+          break;
+        case 'queued':
+        case 'running':
+          break;
+        default:
+          console.log('status is', res.result.task.status);
+          break;
+      }
+    }
+
+    await new Promise(r => setTimeout(r, 2000));
+  }
+}
+
 describe('CloudDatabasesV5_integration', () => {
-  const cloudDatabasesService = CloudDatabasesV5.newInstance({});
+  cloudDatabasesService = CloudDatabasesV5.newInstance();
 
   expect(cloudDatabasesService).not.toBeNull();
 
   const config = readExternalSources(CloudDatabasesV5.DEFAULT_SERVICE_NAME);
   expect(config).not.toBeNull();
 
-  jest.setTimeout(timeout);
+  deploymentId = config.deploymentId;
+  expect(deploymentId).not.toBeNull();
 
-  // Globlal variables to hold link values
-  let taskIdLink;
+  replicaId = config.replicaId;
+  expect(replicaId).not.toBeNull();
+
+  jest.setTimeout(timeout);
 
   test('addAllowlistEntry()', async () => {
     // Request models needed by this operation.
@@ -51,7 +97,7 @@ describe('CloudDatabasesV5_integration', () => {
     };
 
     const params = {
-      id: 'testString',
+      id: deploymentId,
       ipAddress: allowlistEntryModel,
     };
 
@@ -59,26 +105,21 @@ describe('CloudDatabasesV5_integration', () => {
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
     taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
-  test('changeUserPassword()', async () => {
-    // Request models needed by this operation.
-
-    // APasswordSettingUser
-    const aPasswordSettingUserModel = {
-      password: 'xyzzyyzzyx',
-    };
-
+  test('deleteAllowlistEntry()', async () => {
     const params = {
-      id: 'testString',
-      userType: 'database',
-      username: 'james',
-      user: aPasswordSettingUserModel,
+      id: deploymentId,
+      ipaddress: '172.16.0.0/16',
     };
 
-    const res = await cloudDatabasesService.changeUserPassword(params);
+    const res = await cloudDatabasesService.deleteAllowlistEntry(params);
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
     taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
   test('createDatabaseUser()', async () => {
     // Request models needed by this operation.
@@ -91,7 +132,7 @@ describe('CloudDatabasesV5_integration', () => {
     };
 
     const params = {
-      id: 'testString',
+      id: deploymentId,
       userType: 'database',
       user: createDatabaseUserRequestUserModel,
     };
@@ -100,21 +141,34 @@ describe('CloudDatabasesV5_integration', () => {
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
     taskIdLink = res.result.task.id;
+
+    waitForTask(taskIdLink);
   });
-  test('deleteAllowlistEntry()', async () => {
-    const params = {
-      id: 'testString',
-      ipaddress: 'testString',
+  test('changeUserPassword()', async () => {
+    // Request models needed by this operation.
+
+    // APasswordSettingUser
+    const aPasswordSettingUserModel = {
+      password: 'xyzzyyzzyx',
     };
 
-    const res = await cloudDatabasesService.deleteAllowlistEntry(params);
+    const params = {
+      id: deploymentId,
+      userType: 'database',
+      username: 'james',
+      user: aPasswordSettingUserModel,
+    };
+
+    const res = await cloudDatabasesService.changeUserPassword(params);
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
     taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
   test('deleteDatabaseUser()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
       userType: 'database',
       username: 'james',
     };
@@ -123,16 +177,20 @@ describe('CloudDatabasesV5_integration', () => {
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
     taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
   test('killConnections()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
     };
 
     const res = await cloudDatabasesService.killConnections(params);
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
     taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
   test('setAllowlist()', async () => {
     // Request models needed by this operation.
@@ -144,7 +202,7 @@ describe('CloudDatabasesV5_integration', () => {
     };
 
     const params = {
-      id: 'testString',
+      id: deploymentId,
       ipAddresses: [allowlistEntryModel],
       ifMatch: 'testString',
     };
@@ -153,6 +211,8 @@ describe('CloudDatabasesV5_integration', () => {
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
     taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
   test('setAutoscalingConditions()', async () => {
     // Request models needed by this operation.
@@ -173,7 +233,7 @@ describe('CloudDatabasesV5_integration', () => {
     const autoscalingMemoryGroupMemoryRateModel = {
       increase_percent: 10.0,
       period_seconds: 300,
-      limit_mb_per_member: 125952,
+      limit_mb_per_member: 114432,
       units: 'mb',
     };
 
@@ -189,8 +249,8 @@ describe('CloudDatabasesV5_integration', () => {
     };
 
     const params = {
-      id: 'testString',
-      groupId: 'testString',
+      id: deploymentId,
+      groupId: autoScalingGroupId,
       autoscaling: autoscalingSetGroupAutoscalingModel,
     };
 
@@ -198,30 +258,8 @@ describe('CloudDatabasesV5_integration', () => {
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
     taskIdLink = res.result.task.id;
-  });
-  test('setDeploymentScalingGroup()', async () => {
-    // Request models needed by this operation.
 
-    // SetMemoryGroupMemory
-    const setMemoryGroupMemoryModel = {
-      allocation_mb: 4096,
-    };
-
-    // SetDeploymentScalingGroupRequestSetMemoryGroup
-    const setDeploymentScalingGroupRequestModel = {
-      memory: setMemoryGroupMemoryModel,
-    };
-
-    const params = {
-      id: 'testString',
-      groupId: 'testString',
-      setDeploymentScalingGroupRequest: setDeploymentScalingGroupRequestModel,
-    };
-
-    const res = await cloudDatabasesService.setDeploymentScalingGroup(params);
-    expect(res).toBeDefined();
-    expect(res.result).toBeDefined();
-    taskIdLink = res.result.task.id;
+    await waitForTask(taskIdLink);
   });
   test('updateDatabaseConfiguration()', async () => {
     // Request models needed by this operation.
@@ -242,7 +280,7 @@ describe('CloudDatabasesV5_integration', () => {
     };
 
     const params = {
-      id: 'testString',
+      id: deploymentId,
       configuration: setConfigurationConfigurationModel,
     };
 
@@ -250,6 +288,8 @@ describe('CloudDatabasesV5_integration', () => {
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
     taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
   test('listDeployables()', async () => {
     const res = await cloudDatabasesService.listDeployables();
@@ -263,7 +303,7 @@ describe('CloudDatabasesV5_integration', () => {
   });
   test('getDeploymentInfo()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
     };
 
     const res = await cloudDatabasesService.getDeploymentInfo(params);
@@ -272,7 +312,7 @@ describe('CloudDatabasesV5_integration', () => {
   });
   test('listRemotes()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
     };
 
     const res = await cloudDatabasesService.listRemotes(params);
@@ -281,33 +321,39 @@ describe('CloudDatabasesV5_integration', () => {
   });
   test('resyncReplica()', async () => {
     const params = {
-      id: 'testString',
+      id: replicaId,
     };
 
     const res = await cloudDatabasesService.resyncReplica(params);
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
+    taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
   test('setPromotion()', async () => {
     // Request models needed by this operation.
 
     // SetPromotionPromotionPromote
     const setPromotionPromotionModel = {
-      promotion: { 'key1': { foo: 'bar' } },
+      promotion: { 'skip_initial_backup': true },
     };
 
     const params = {
-      id: 'testString',
+      id: replicaId,
       promotion: setPromotionPromotionModel,
     };
 
     const res = await cloudDatabasesService.setPromotion(params);
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
+    taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
   test('listDeploymentTasks()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
     };
 
     const res = await cloudDatabasesService.listDeploymentTasks(params);
@@ -323,27 +369,28 @@ describe('CloudDatabasesV5_integration', () => {
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
   });
+  test('listDeploymentBackups()', async () => {
+    const params = {
+      id: deploymentId,
+    };
+
+    const res = await cloudDatabasesService.listDeploymentBackups(params);
+    expect(res).toBeDefined();
+    expect(res.result).toBeDefined();
+    backupIdLink = res.result.backups[0].id;
+  });
   test('getBackupInfo()', async () => {
     const params = {
-      backupId: 'testString',
+      backupId: backupIdLink,
     };
 
     const res = await cloudDatabasesService.getBackupInfo(params);
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
   });
-  test('listDeploymentBackups()', async () => {
-    const params = {
-      id: 'testString',
-    };
-
-    const res = await cloudDatabasesService.listDeploymentBackups(params);
-    expect(res).toBeDefined();
-    expect(res.result).toBeDefined();
-  });
   test('startOndemandBackup()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
     };
 
     const res = await cloudDatabasesService.startOndemandBackup(params);
@@ -352,7 +399,7 @@ describe('CloudDatabasesV5_integration', () => {
   });
   test('getPitRdata()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
     };
 
     const res = await cloudDatabasesService.getPitRdata(params);
@@ -361,7 +408,7 @@ describe('CloudDatabasesV5_integration', () => {
   });
   test('getConnection()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
       userType: 'database',
       userId: 'testString',
       endpointType: 'public',
@@ -374,7 +421,7 @@ describe('CloudDatabasesV5_integration', () => {
   });
   test('completeConnection()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
       userType: 'database',
       userId: 'testString',
       endpointType: 'public',
@@ -388,12 +435,51 @@ describe('CloudDatabasesV5_integration', () => {
   });
   test('listDeploymentScalingGroups()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
     };
 
     const res = await cloudDatabasesService.listDeploymentScalingGroups(params);
     expect(res).toBeDefined();
     expect(res.result).toBeDefined();
+    scalingGroupIdLink = res.result.groups[0].id;
+  });
+  test('setDeploymentScalingGroup()', async () => {
+    // Request models needed by this operation.
+
+    // SetMemoryGroupMemory
+    const setMemoryGroupMemoryModel = {
+      allocation_mb: 114688,
+    };
+
+    // SetDeploymentScalingGroupRequestSetMemoryGroup
+    const setDeploymentScalingGroupRequestModel = {
+      memory: setMemoryGroupMemoryModel,
+    };
+
+    const params = {
+      id: deploymentId,
+      groupId: scalingGroupIdLink,
+      setDeploymentScalingGroupRequest: setDeploymentScalingGroupRequestModel,
+    };
+
+    let res;
+    try {
+      res = await cloudDatabasesService.setDeploymentScalingGroup(params);
+      taskIdLink = res.result.task.id;
+      await waitForTask(taskIdLink);
+    } catch (err) {
+      console.log(err);
+    }
+
+    params.setDeploymentScalingGroupRequest.memory.allocation_mb = 114432;
+
+    res = await cloudDatabasesService.setDeploymentScalingGroup(params);
+
+    expect(res).toBeDefined();
+    expect(res.result).toBeDefined();
+    taskIdLink = res.result.task.id;
+
+    await waitForTask(taskIdLink);
   });
   test('getDefaultScalingGroups()', async () => {
     const params = {
@@ -406,8 +492,8 @@ describe('CloudDatabasesV5_integration', () => {
   });
   test('getAutoscalingConditions()', async () => {
     const params = {
-      id: 'testString',
-      groupId: 'testString',
+      id: deploymentId,
+      groupId: scalingGroupIdLink,
     };
 
     const res = await cloudDatabasesService.getAutoscalingConditions(params);
@@ -416,7 +502,7 @@ describe('CloudDatabasesV5_integration', () => {
   });
   test('getAllowlist()', async () => {
     const params = {
-      id: 'testString',
+      id: deploymentId,
     };
 
     const res = await cloudDatabasesService.getAllowlist(params);
