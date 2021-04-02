@@ -331,7 +331,8 @@ describe('CloudDatabasesV5_integration', () => {
 
     await waitForTask(taskIdLink);
   });
-  test('setPromotion()', async () => {
+  // Skip the setPromotion test by default to preserve test environment
+  test.skip('setPromotion()', async () => {
     // Request models needed by this operation.
 
     // SetPromotionPromotionPromote

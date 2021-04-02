@@ -30,6 +30,8 @@ const authHelper = require('../test/resources/auth-helper.js');
 // CLOUD_DATABASES_AUTH_TYPE=iam
 // CLOUD_DATABASES_APIKEY=<IAM apikey>
 // CLOUD_DATABASES_AUTH_URL=<IAM token service base URL - omit this if using the production environment>
+// CLOUD_DATABASES_DEPLOYMENT_ID=<ID of an example deployment>
+// CLOUD_DATABASES_REPLICA_ID=<ID of an example replica>
 //
 // These configuration properties can be exported as environment variables, or stored
 // in a configuration file and then:
@@ -602,7 +604,8 @@ describe('CloudDatabasesV5', () => {
 
     // end-resyncReplica
   });
-  test('setPromotion request example', done => {
+  // Skip the setPromotion test by default to preserve test environment
+  test.skip('setPromotion request example', done => {
 
     consoleLogMock.mockImplementation(output => {
       originalLog(output);
