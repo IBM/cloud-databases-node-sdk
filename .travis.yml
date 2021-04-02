@@ -23,10 +23,10 @@ after_success:
 - npm run report-coverage
 
 # To enable semantic-release, uncomment this section.
-# deploy:
-# - provider: script
-#   skip_cleanup: true
-#   script: npx semantic-release
-#   on:
-#     node: 12
-#     branch: main
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: npx semantic-release
+  on:
+    node: 12
+    branch: main
