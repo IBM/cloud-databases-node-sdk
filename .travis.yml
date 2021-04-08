@@ -7,26 +7,23 @@ node_js:
 - 12
 
 before_install:
-- echo -e "machine github.ibm.com\n  login $GITHUB_OAUTH_TOKEN" > ~/.netrc
-# -  'openssl aes-256-cbc -K $my_key -iv $my_iv -in myservice.env.enc -out myservice.env -d || true'
+  - npm install -g npm@7
 
 script:
-- npm run build
-- npm run test-travis || travis_terminate 1
-- npm run lint
-- npm run check-packages
-# - sh scripts/typedoc/generate_typedoc.sh currently in progress
-
-
+  - npm --version
+  - npm run build
+  - npm run test-unit-travis || travis_terminate 1
+  - npm run lint
+  - npm run check-packages
 
 after_success:
-- npm run report-coverage
+  - npm run report-coverage
 
 # To enable semantic-release, uncomment this section.
-deploy:
-- provider: script
-  skip_cleanup: true
-  script: npx semantic-release
-  on:
-    node: 12
-    branch: main
+# deploy:
+# - provider: script
+#   skip_cleanup: true
+#   script: npx semantic-release
+#   on:
+#     node: 12
+#     branch: main

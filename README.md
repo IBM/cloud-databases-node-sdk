@@ -1,11 +1,12 @@
-[![Build Status](https://travis-ci.com/ibmcloud/icd-node-sdk.svg?token=eW5FVD71iyte6tTby8gr&branch=main)](https://travis.ibm.com/ibmcloud/icd-node-sdk)
+[![Build Status](https://travis-ci.com/IBM/cloud-databases-node-sdk.svg?branch=main)](https://travis-ci.com/IBM/cloud-databases-node-sdk)
+[![Release](https://img.shields.io/github/v/release/IBM/cloud-databases-node-sdk)](https://github.com/IBM/cloud-databases-node-sdk/releases/latest)
+[![npm](https://img.shields.io/npm/v/ibm-cloud-databases)](https://www.npmjs.com/package/ibm-cloud-databases)
+![npm](https://img.shields.io/npm/dm/ibm-cloud-databases)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![codecov](https://codecov.io/gh/IBM/cloud-databases-node-sdk/branch/main/graph/badge.svg)](https://codecov.io/gh/IBM/cloud-databases-node-sdk)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
-<!--
-[![npm-version](https://img.shields.io/npm/v/ibmcloud/icd-node-sdk.svg)](https://www.npmjs.com/package/ibm-cloud-databases)
-[![codecov](https://codecov.io/gh/ibmcloud/icd-node-sdk/branch/main/graph/badge.svg)](https://codecov.io/gh/ibmcloud/icd-node-sdk)
--->
 # IBM Cloud Databases Node.js SDK
-Node.js client library to interact with various [Cloud Databases APIs](https://cloud.ibm.com/apidocs?category=cloud-databases).
+Node.js client library to interact with the [IBM Cloud Databases APIs](https://cloud.ibm.com/apidocs?category=cloud-databases).
 
 Disclaimer: this SDK is being released initially as a **pre-release** version.
 Changes might occur which impact applications that use this SDK.
@@ -39,12 +40,12 @@ Changes might occur which impact applications that use this SDK.
 <!-- --------------------------------------------------------------- -->
 ## Overview
 
-The IBM Cloud Cloud Databases Node.js SDK allows developers to programmatically interact with the following
+The IBM Cloud Databases Node.js SDK allows developers to programmatically interact with the following
 IBM Cloud services:
 
 Service Name | Import Path
 --- | ---
-<!-- [Example Service](https://cloud.ibm.com/apidocs/example-service) | ibm-cloud-databases/example-service/v1 -->
+[Cloud Databases v5 API](https://cloud.ibm.com/apidocs/cloud-databases-api) | ibm-cloud-databases/cloud-databases/v5
 
 ## Prerequisites
 * You need an [IBM Cloud][ibm-cloud-onboarding] account.
@@ -70,7 +71,7 @@ please ask a question at
 
 ## Issues
 If you encounter an issue with the SDK, you are welcome to submit
-a [bug report](https://github.ibm.com/ibmcloud/icd-node-sdk/issues).
+a [bug report](https://github.com/IBM/cloud-databases-node-sdk/issues).
 Before that, please search for similar issues. It's possible someone has
 already encountered this issue.
 

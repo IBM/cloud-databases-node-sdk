@@ -8,6 +8,7 @@ auth/*.js
 # service-specific tsc outputs (js files)
 # example-service/*.js
 # IGNORE YOUR SERVICE FILES HERE
+cloud-databases/*.js
 
 # file holding service credentials
 test/resources/auth.js
