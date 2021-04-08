@@ -1,6 +1,6 @@
 {
   "name": "ibm-cloud-databases",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "IBM Cloud Databases Node.js SDK",
   "repository": {
     "type": "git",
