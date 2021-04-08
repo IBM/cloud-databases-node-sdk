@@ -3,8 +3,8 @@ language: node_js
 sudo: false
 
 node_js:
-- 10
-- 12
+  - 10
+  - 12
 
 before_install:
   - npm install -g npm@7
@@ -19,11 +19,10 @@ script:
 after_success:
   - npm run report-coverage
 
-# To enable semantic-release, uncomment this section.
-# deploy:
-# - provider: script
-#   skip_cleanup: true
-#   script: npx semantic-release
-#   on:
-#     node: 12
-#     branch: main
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: npx semantic-release
+    on:
+      node: 12
+      branch: main
