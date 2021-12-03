@@ -3,7 +3,6 @@
 [![npm](https://img.shields.io/npm/v/ibm-cloud-databases)](https://www.npmjs.com/package/ibm-cloud-databases)
 ![npm](https://img.shields.io/npm/dm/ibm-cloud-databases)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![codecov](https://codecov.io/gh/IBM/cloud-databases-node-sdk/branch/main/graph/badge.svg)](https://codecov.io/gh/IBM/cloud-databases-node-sdk)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![CLA assistant](https://cla-assistant.io/readme/badge/ibm/cloud-databases-node-sdk)](https://cla-assistant.io/ibm/cloud-databases-node-sdk)
 
