@@ -3,11 +3,8 @@ language: node_js
 sudo: false
 
 node_js:
-  - 10
   - 12
-
-before_install:
-  - npm install -g npm@7
+  - 14
 
 script:
   - npm --version
@@ -21,5 +18,5 @@ deploy:
     skip_cleanup: true
     script: npx semantic-release
     on:
-      node: 12
+      node: 14
       branch: main
